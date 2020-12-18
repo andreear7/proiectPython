@@ -2,8 +2,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 # import os
 
-flag = True
+# de facut:
+# adaugat paramentru oponent si apelat set_oponent
+# functii pt fiecare buton ( daca am buttons complet apelez update_points cu ele si playerul)
+# label pentru anuntat cine muta ( si de ce in cazul exceptiilor) daca value=0 / pt anuntat castigatorul
+# (/ pt mutare gresita)
+# functie pt apelat move_calculator cand oponent=calculator si e randul lui
+# implementat efectiv mutarea pietrelor
 
+oponent = "calculator"
+buttons = [" "," "]
+player=0
 
 class MancalaGui(object):
 
