@@ -1,18 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 # import os
+from PyQt5.QtWidgets import QApplication
+
+import game
 
 # de facut:
-# adaugat paramentru oponent si apelat set_oponent
-# functii pt fiecare buton ( daca am buttons complet apelez update_points cu ele si playerul)
-# label pentru anuntat cine muta ( si de ce in cazul exceptiilor) daca value=0 / pt anuntat castigatorul
-# (/ pt mutare gresita)
-# functie pt apelat move_calculator cand oponent=calculator si e randul lui
 # implementat efectiv mutarea pietrelor
 
-oponent = "calculator"
-buttons = [" "," "]
-player=0
+opponent = "calculator"
+buttons = [" ", " "]
+player = 0
+
 
 class MancalaGui(object):
 
@@ -60,6 +59,14 @@ class MancalaGui(object):
         self.reg_label.setGeometry(QtCore.QRect(100, 50, 650, 400))
         self.reg_label.setAlignment(QtCore.Qt.AlignCenter)
 
+        self.text_label = QtWidgets.QLabel(self.centralwidget)
+        self.text_label.setStyleSheet(
+            "font: bold; font-size:14px;background-color: rgb(234, 236, 238); border-image:none")
+        self.text_label.setGeometry(QtCore.QRect(70, 50, 700, 20))
+        self.text_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.text_label.setText("")
+        self.text_label.setVisible(False)
+
         self.board_label = QtWidgets.QLabel(self.centralwidget)
         self.board_label.setStyleSheet("border-radius:50px;font: bold; font-size:14px; border-image: url(wm.jpg)")
         self.board_label.setGeometry(QtCore.QRect(65, 110, 743, 280))
@@ -69,98 +76,98 @@ class MancalaGui(object):
         self.A1Button.setGeometry(185, 140, 80, 80)
         self.A1Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A1Button.clicked.connect(self.A1)
+        self.A1Button.clicked.connect(self.a1)
         self.A1Button.setVisible(False)
 
         self.A2Button = QtWidgets.QPushButton(self.centralwidget)
         self.A2Button.setGeometry(270, 140, 80, 80)
         self.A2Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A2Button.clicked.connect(self.A2)
+        self.A2Button.clicked.connect(self.a2)
         self.A2Button.setVisible(False)
 
         self.A3Button = QtWidgets.QPushButton(self.centralwidget)
         self.A3Button.setGeometry(355, 140, 80, 80)
         self.A3Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A3Button.clicked.connect(self.A2)
+        self.A3Button.clicked.connect(self.a3)
         self.A3Button.setVisible(False)
 
         self.A4Button = QtWidgets.QPushButton(self.centralwidget)
         self.A4Button.setGeometry(440, 140, 80, 80)
         self.A4Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A4Button.clicked.connect(self.A2)
+        self.A4Button.clicked.connect(self.a4)
         self.A4Button.setVisible(False)
 
         self.A5Button = QtWidgets.QPushButton(self.centralwidget)
         self.A5Button.setGeometry(525, 140, 80, 80)
         self.A5Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A5Button.clicked.connect(self.A2)
+        self.A5Button.clicked.connect(self.a5)
         self.A5Button.setVisible(False)
 
         self.A6Button = QtWidgets.QPushButton(self.centralwidget)
         self.A6Button.setGeometry(610, 140, 80, 80)
         self.A6Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.A6Button.clicked.connect(self.A2)
+        self.A6Button.clicked.connect(self.a6)
         self.A6Button.setVisible(False)
 
         self.AButton = QtWidgets.QPushButton(self.centralwidget)
         self.AButton.setGeometry(80, 140, 100, 220)
         self.AButton.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.AButton.clicked.connect(self.A2)
+        self.AButton.clicked.connect(self.a)
         self.AButton.setVisible(False)
 
         self.BButton = QtWidgets.QPushButton(self.centralwidget)
         self.BButton.setGeometry(693, 140, 100, 220)
         self.BButton.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.BButton.clicked.connect(self.A2)
+        self.BButton.clicked.connect(self.b)
         self.BButton.setVisible(False)
 
         self.B1Button = QtWidgets.QPushButton(self.centralwidget)
         self.B1Button.setGeometry(185, 280, 80, 80)
         self.B1Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B1Button.clicked.connect(self.A1)
+        self.B1Button.clicked.connect(self.b1)
         self.B1Button.setVisible(False)
 
         self.B2Button = QtWidgets.QPushButton(self.centralwidget)
         self.B2Button.setGeometry(270, 280, 80, 80)
         self.B2Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B2Button.clicked.connect(self.A2)
+        self.B2Button.clicked.connect(self.b2)
         self.B2Button.setVisible(False)
 
         self.B3Button = QtWidgets.QPushButton(self.centralwidget)
         self.B3Button.setGeometry(355, 280, 80, 80)
         self.B3Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B3Button.clicked.connect(self.A2)
+        self.B3Button.clicked.connect(self.b3)
         self.B3Button.setVisible(False)
 
         self.B4Button = QtWidgets.QPushButton(self.centralwidget)
         self.B4Button.setGeometry(440, 280, 80, 80)
         self.B4Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B4Button.clicked.connect(self.A2)
+        self.B4Button.clicked.connect(self.b4)
         self.B4Button.setVisible(False)
 
         self.B5Button = QtWidgets.QPushButton(self.centralwidget)
         self.B5Button.setGeometry(525, 280, 80, 80)
         self.B5Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B5Button.clicked.connect(self.A2)
+        self.B5Button.clicked.connect(self.b5)
         self.B5Button.setVisible(False)
 
         self.B6Button = QtWidgets.QPushButton(self.centralwidget)
         self.B6Button.setGeometry(610, 280, 80, 80)
         self.B6Button.setStyleSheet(
             "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
-        self.B6Button.clicked.connect(self.A2)
+        self.B6Button.clicked.connect(self.b6)
         self.B6Button.setVisible(False)
 
         self.A11label = QtWidgets.QLabel(self.centralwidget)
@@ -515,7 +522,7 @@ class MancalaGui(object):
         self.B62label.setVisible(value)
         self.B63label.setVisible(value)
         self.B64label.setVisible(value)
-
+        self.text_label.setVisible(value)
 
     def start(self):
         self.startButton.setVisible(False)
@@ -556,11 +563,248 @@ class MancalaGui(object):
         self.centralwidget.setStyleSheet("border-image : url(m1.jpg) 0 0 0 0 stretch stretch;")
         self.set_board_visible(False)
 
-    def A1(self):
-        pass
+    def play(self):
+        self.text_label.setStyleSheet("font: bold; font-size:14px; color:black")
+        self.text_label.setText("")
+        global buttons,player
+        result = game.update_points(buttons[0], buttons[1], player)
+        # print("ce rahat ai")
+        print("result e ",result[0],result[1])
+        if result[0] == 0 and result[1] == 0:
+            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setText("Nu este randul tau!")
+            QApplication.processEvents()
+        if (result[0] == 0 and result[1] == 1) or (result[0] == 4 and result[1] == 2):
+            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setText("Nu ai mutat conform regulilor! Te rog sa refaci ultima mutare!")
+            buttons[0] = " "
+            buttons[1] = " "
+            QApplication.processEvents()
+        if (result[0] == 2 and result[1] == 0) :
+            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setText("Groapa nu are niciun punct! Te rog sa refaci ultima mutare!")
+            buttons[0] = " "
+            buttons[1] = " "
+            QApplication.processEvents()
+        if result[0] == 1 and result[1] == 0:
+            if player == 1:
+                player = 0
+                nume = "A"
+            else:
+                player = 1
+                nume = "B"
+            self.text_label.setText("Este randul lui " + nume)
+            buttons[0] = " "
+            buttons[1] = " "
+            game.set_player(player)
+            QApplication.processEvents()
+            if opponent == "calculator" and nume == "B":
+                game.move_calculator()
+        if result[0] == 1 and result[1] == 1:
+            if opponent == "calculator" and player == "B":
+                self.text_label.setText("Ultima piatra a ajuns in banca calculatorului, va muta din nou!")
+                buttons[0] = " "
+                buttons[1] = " "
+                game.move_calculator()
 
-    def A2(self):
-        pass
+            else:
+                self.text_label.setText("Ultima piatra a ajuns in banca ta, poti muta din nou!")
+                buttons[0] = " "
+                buttons[1] = " "
+        QApplication.processEvents()
+        if result[0] == 1 and result[1] == 2:
+            if player == 1:
+                player = 0
+                nume = "A"
+            else:
+                player = 1
+                nume = "B"
+            if opponent == "calculator" and nume == "A":
+                self.text_label.setText(
+                    "Calculatorul aduna toate pietrele din groapa opusa+ultima piatra. Urmeaza randul tau")
+                buttons[0] = " "
+                buttons[1] = " "
+                game.set_player(player)
+                QApplication.processEvents()
+            else:
+                self.text_label.setText(
+                    "Aduni toate pietrele din groapa opusa+ultima piatra. Urmeaza randul lui " + nume)
+                buttons[0] = " "
+                buttons[1] = " "
+                game.set_player(player)
+                QApplication.processEvents()
+                if opponent == "calculator" and nume == "B":
+                    game.move_calculator()
+        if result[0] == 1 and result[1] == 3:
+            print("aici????")
+            self.text_label.setText("")
+            buttons[0]=buttons[1]
+            buttons[1]=" "
+        if result[0] == 3:
+            if player == 1:
+                nume = "A"
+            else:
+                nume = "B"
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:green")
+            self.text_label.setText("Jocul s-a terminat! Castigatorul este: " + nume + "!")
+            QApplication.processEvents()
+
+    def a1(self):
+        print("a1")
+        global buttons, player
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A1"
+        elif buttons[1] == " ":
+            buttons[1] = "A1"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+
+
+    def a2(self):
+        print("a2")
+
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A2"
+        elif buttons[1] == " ":
+            buttons[1] = "A2"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def a3(self):
+        print("a3")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A3"
+        elif buttons[1] == " ":
+            buttons[1] = "A3"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def a4(self):
+        print("a4")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A4"
+        elif buttons[1] == " ":
+            buttons[1] = "A4"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def a5(self):
+        print("a5")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A5"
+        elif buttons[1] == " ":
+            buttons[1] = "A5"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def a6(self):
+        print("a6")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A6"
+        elif buttons[1] == " ":
+            buttons[1] = "A6"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def a(self):
+        print("a")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "A"
+        elif buttons[1] == " ":
+            buttons[1] = "A"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b(self):
+        print("b")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B"
+        elif buttons[1] == " ":
+            buttons[1] = "B"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b1(self):
+        print("b1")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B1"
+        elif buttons[1] == " ":
+            buttons[1] = "B1"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b2(self):
+        print("b2")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B2"
+        elif buttons[1] == " ":
+            buttons[1] = "B2"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b3(self):
+        print("b3")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B3"
+        elif buttons[1] == " ":
+            buttons[1] = "B3"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b4(self):
+        print("b4")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B4"
+        elif buttons[1] == " ":
+            buttons[1] = "B4"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b5(self):
+        print("b5")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B5"
+        elif buttons[1] == " ":
+            buttons[1] = "B5"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
+
+    def b6(self):
+        print("b6")
+        global buttons
+        print(buttons)
+        if buttons[0] == " ":
+            buttons[0] = "B6"
+        elif buttons[1] == " ":
+            buttons[1] = "B6"
+        if buttons[0] != " " and buttons[1] != " ":
+            self.play()
 
 
 class MyWindow(QtWidgets.QMainWindow):
@@ -586,9 +830,28 @@ class MyWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) != 2:
+        raise ValueError('Trebuie sa alegi tipul de oponent!')
+    opponent = sys.argv[1]
+    game.set_opponent(opponent)
     app = QtWidgets.QApplication(sys.argv)
     Mancala = QtWidgets.QMainWindow()
     Mancala = MyWindow()
     ui = MancalaGui()
     ui.setup_ui(Mancala)
+
+    sys._excepthook = sys.excepthook
+
+
+    def exception_hook(exctype, value, traceback):
+        print(exctype, value, traceback)
+        sys._excepthook(exctype, value, traceback)
+        sys.exit(1)
+
+
+    sys.excepthook = exception_hook
+
+
     sys.exit(app.exec_())

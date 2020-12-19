@@ -1,7 +1,7 @@
 import random
 
-#de facut:
-#testat functiile
+#   de facut:
+#  reverificat update_points
 
 points_dict = {"B1": 4, "B2": 4, "B3": 4, "B4": 4, "B5": 4, "B6": 4, "B": 0, "A6": 4, "A5": 4, "A4": 4, "A3": 4,
                "A2": 4, "A1": 4, "A": 0}
@@ -9,14 +9,19 @@ buttons = ["B1", "B2", "B3", "B4", "B5", "B6", "B", "A6", "A5", "A4", "A3", "A2"
 player_1 = True
 player_0 = False
 value = 4
-oponent = "calculator"  # care va fi player_1
+opponent = "calculator"  # care va fi player_1
 button_2_calculator = 0
 
 
-def set_oponent(oponentul):
+def set_opponent(oponentul):
     global oponent
     oponent = oponentul
 
+def set_player(player):
+    if player==0:
+        player_0=True
+    else:
+        player_1=True
 
 def get_player():
     if player_1 is True:
@@ -26,33 +31,49 @@ def get_player():
 
 
 def check_order(button1, button2):
-    if not (button1 == "A" and button2 == "B1") | (buttons.index(button1) != buttons.index(button2) - 1):
-        return 0  # a apasat gresit
-    else:
+    # print("check_order")
+    print("order",buttons.index(button1), buttons.index(button2))
+    if (button1 == "A" and button2 == "B1") | (buttons.index(button1) == buttons.index(button2) - 1):
         return 1
+    else:
+        print("gresita ordinea")
+        return 0 # a apasat gresit
 
+def check_player_start(player,button):
+    if button=="A" or button=="B":
+        return 0
+    if player==0:
+        if "A" not in button:
+            return 0
+    if player==1:
+        if "B" not in button:
+            return 0
 
 def check_player(player):
-    if "player_" + player is True:
+    if "player_" + str(player) is True:
         return 0
     else:
         return 1
 
 
 def check_exceptions(player, button):
+    # print("check_exceptions")
+    print("puncte/buton",points_dict[button])
     if (player == 1 and button == "B") | (player == 0 and button == "A"):
         return (1, 0)  # e din nou randul lui
-    if (player == 1 & points_dict[button] == 0):
+    if (player == 1 and points_dict[button] == 0):
         oponent_button = "A" + button[1]
         return (2, oponent_button)  # regula 2- va lua toate pietrele din groapa opusa
-    elif (player == 0 & points_dict[button] == 0):
+    elif (player == 0 and points_dict[button] == 0):
         oponent_button = "B" + button[1]
         return (2, oponent_button)  # regula 2- va lua toate pietrele din groapa opusa
     return (0, 0)  # nicio exceptie
 
 
 def check_bank(button, player):
+    # print("check_bank")
     if (player == 1 and button == "A") or (player == 0 and button == "B"):
+        print("gresita banca")
         return 0  # a apasat gresit
     else:
         return 1
@@ -69,6 +90,7 @@ def check_game_over():
 
 
 def move_calculator():
+    print("move_calculator")
     global button_2_calculator
     if value == 0:  # trebuie sa aleg un buton de pe care incep
         button = random.randint(1, 6)
@@ -95,14 +117,24 @@ def move_calculator():
 
 
 def update_points(button1, button2, player):
+    # print("update_points")
+    print(button1,button2,player)
     global value, points_dict, player_0, player_1
-    if value == 0:
-        if check_player(player) == 0:
+    if check_player(player) == 0:
             # a apasat gresit - nu e randul lui
+            # print("returnez 00")
             return (0, 0)
-        else:
+    print("value",value)
+    inceput=0
+    if value == 0:
             # abia a inceput mutarile
+            inceput=1
+            if check_player_start(player,button1)==0:
+                return (4,2)
             value = points_dict[button1]
+            print("value dupa update",value)
+            if value==0:
+                return (2,0)
     ok = 0
     bank = 0
     if button1 == "A" or button1 == "B":
@@ -113,8 +145,10 @@ def update_points(button1, button2, player):
         ok = ok + check_bank(button2, player)
     if ok == 2:
         # nu a mutat bine, dar e randul lui
+        # print("returnez 01")
         return (0, 1)
     ok = ok + check_order(button1, button2)
+    # print("ok da ",ok)
     if (bank == 1 and ok == 2) or (bank == 0 and ok == 1):
         # cand valoarea e 0, trebuie afisat ce se intampla
         value = value - 1
@@ -123,16 +157,23 @@ def update_points(button1, button2, player):
                 return (3, get_winner())
             exception = check_exceptions(player, button2)
             if exception[0] == 0:
-                points_dict[button1] = points_dict[button1] - 1
+                if inceput==1:
+                    points_dict[button1] = 0
                 points_dict[button2] = points_dict[button2] + 1
+
                 if player == 1:
                     player_1 = False
                     player_0 = True
                 else:
                     player_1 = True
                     player_0 = False
+                    # print("returnez 10")
                 return (1, 0)  # a mutat bine, i se termina randul
             elif exception[0] == 1:
+                # print("returnez 11")
+                if inceput==1:
+                    points_dict[button1] = 0
+                points_dict[button2] = points_dict[button2] + 1
                 return (1, 1)  # a mutat bine si exceptia e 1 => i se reia randul
             elif exception[0] == 2:
                 if player == 1:
@@ -145,12 +186,16 @@ def update_points(button1, button2, player):
                     points_dict["A"] = points_dict["A"] + points_dict[exception[1]]
                 points_dict[button1] = points_dict[button1] - 1
                 points_dict[exception[1]] = 0
+                # print("returnez 12")
                 return (1, 2)  # a mutat bine, e exceptia 2 => i se termina randul
         else:  # nimic special
-            points_dict[button1] = points_dict[button1] - 1
+            if inceput == 1:
+                points_dict[button1] = 0
             points_dict[button2] = points_dict[button2] + 1
+            # print("returnez 13")
             return (1, 3)  # a mutat bine, continua
-
+    else:
+        return (4,2)
 
 def get_final_points():
     global points_dict
@@ -163,6 +208,6 @@ def get_final_points():
 def get_winner():
     get_final_points()
     if points_dict["A"] > points_dict["B"]:
-        return 1  # A
+        return 1  # B
     else:
-        return 0  # B
+        return 0  # A
