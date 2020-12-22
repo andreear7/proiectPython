@@ -6,7 +6,9 @@ from PyQt5.QtWidgets import QApplication
 import game
 
 # de facut:
-# implementat efectiv mutarea pietrelor
+# "nu este randul tau" dupa apasarea unui buton
+# aduni toate pietrele din groapa opusa..
+# revazut buline
 
 opponent = "calculator"
 buttons = [" ", " "]
@@ -72,101 +74,200 @@ class MancalaGui(object):
         self.board_label.setGeometry(QtCore.QRect(65, 110, 743, 280))
         self.board_label.setAlignment(QtCore.Qt.AlignCenter)
 
+
+        self.A1_points=QtWidgets.QLabel(self.centralwidget)
+        self.A1_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A1_points.setText("4")
+        self.A1_points.setGeometry(QtCore.QRect(185,140, 15, 15))
+        self.A1_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A2_points = QtWidgets.QLabel(self.centralwidget)
+        self.A2_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A2_points.setText("4")
+        self.A2_points.setGeometry(QtCore.QRect(270, 140, 15, 15))
+        self.A2_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A3_points = QtWidgets.QLabel(self.centralwidget)
+        self.A3_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A3_points.setText("4")
+        self.A3_points.setGeometry(QtCore.QRect(355, 140, 15, 15))
+        self.A3_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A4_points = QtWidgets.QLabel(self.centralwidget)
+        self.A4_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A4_points.setText("4")
+        self.A4_points.setGeometry(QtCore.QRect(440, 140, 15, 15))
+        self.A4_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A5_points = QtWidgets.QLabel(self.centralwidget)
+        self.A5_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A5_points.setText("4")
+        self.A5_points.setGeometry(QtCore.QRect(525, 140, 15, 15))
+        self.A5_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A6_points = QtWidgets.QLabel(self.centralwidget)
+        self.A6_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A6_points.setText("4")
+        self.A6_points.setGeometry(QtCore.QRect(610, 140, 15, 15))
+        self.A6_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.A_points = QtWidgets.QLabel(self.centralwidget)
+        self.A_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.A_points.setText("0")
+        self.A_points.setGeometry(QtCore.QRect(80, 140, 15, 15))
+        self.A_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B1_points = QtWidgets.QLabel(self.centralwidget)
+        self.B1_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B1_points.setText("4")
+        self.B1_points.setGeometry(QtCore.QRect(185,280, 15, 15))
+        self.B1_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B2_points = QtWidgets.QLabel(self.centralwidget)
+        self.B2_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B2_points.setText("4")
+        self.B2_points.setGeometry(QtCore.QRect(270,280, 15, 15))
+        self.B2_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B3_points = QtWidgets.QLabel(self.centralwidget)
+        self.B3_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B3_points.setText("4")
+        self.B3_points.setGeometry(QtCore.QRect(355, 280, 15, 15))
+        self.B3_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B4_points = QtWidgets.QLabel(self.centralwidget)
+        self.B4_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B4_points.setText("4")
+        self.B4_points.setGeometry(QtCore.QRect(440, 280, 15, 15))
+        self.B4_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B5_points = QtWidgets.QLabel(self.centralwidget)
+        self.B5_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B5_points.setText("4")
+        self.B5_points.setGeometry(QtCore.QRect(525, 280, 15, 15))
+        self.B5_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B6_points = QtWidgets.QLabel(self.centralwidget)
+        self.B6_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B6_points.setText("4")
+        self.B6_points.setGeometry(QtCore.QRect(610, 280, 15, 15))
+        self.B6_points.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.B_points = QtWidgets.QLabel(self.centralwidget)
+        self.B_points.setStyleSheet("font: bold; font-size:12px;background-image:url(wm1.jpg);")
+        self.B_points.setText("0")
+        self.B_points.setGeometry(QtCore.QRect(695, 140, 15, 15))
+        self.B_points.setAlignment(QtCore.Qt.AlignCenter)
+
         self.A1Button = QtWidgets.QPushButton(self.centralwidget)
         self.A1Button.setGeometry(185, 140, 80, 80)
         self.A1Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A1Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A1Button.clicked.connect(self.a1)
         self.A1Button.setVisible(False)
 
         self.A2Button = QtWidgets.QPushButton(self.centralwidget)
         self.A2Button.setGeometry(270, 140, 80, 80)
         self.A2Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A2Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A2Button.clicked.connect(self.a2)
         self.A2Button.setVisible(False)
 
         self.A3Button = QtWidgets.QPushButton(self.centralwidget)
         self.A3Button.setGeometry(355, 140, 80, 80)
         self.A3Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A3Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A3Button.clicked.connect(self.a3)
         self.A3Button.setVisible(False)
 
         self.A4Button = QtWidgets.QPushButton(self.centralwidget)
         self.A4Button.setGeometry(440, 140, 80, 80)
         self.A4Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A4Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A4Button.clicked.connect(self.a4)
         self.A4Button.setVisible(False)
 
         self.A5Button = QtWidgets.QPushButton(self.centralwidget)
         self.A5Button.setGeometry(525, 140, 80, 80)
         self.A5Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A5Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A5Button.clicked.connect(self.a5)
         self.A5Button.setVisible(False)
 
         self.A6Button = QtWidgets.QPushButton(self.centralwidget)
         self.A6Button.setGeometry(610, 140, 80, 80)
         self.A6Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.A6Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.A6Button.clicked.connect(self.a6)
         self.A6Button.setVisible(False)
 
         self.AButton = QtWidgets.QPushButton(self.centralwidget)
         self.AButton.setGeometry(80, 140, 100, 220)
         self.AButton.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.AButton.setText("0")
         self.AButton.clicked.connect(self.a)
         self.AButton.setVisible(False)
 
         self.BButton = QtWidgets.QPushButton(self.centralwidget)
         self.BButton.setGeometry(693, 140, 100, 220)
         self.BButton.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.BButton.setText("0")
         self.BButton.clicked.connect(self.b)
         self.BButton.setVisible(False)
 
         self.B1Button = QtWidgets.QPushButton(self.centralwidget)
         self.B1Button.setGeometry(185, 280, 80, 80)
         self.B1Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B1Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B1Button.clicked.connect(self.b1)
         self.B1Button.setVisible(False)
 
         self.B2Button = QtWidgets.QPushButton(self.centralwidget)
         self.B2Button.setGeometry(270, 280, 80, 80)
         self.B2Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B2Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B2Button.clicked.connect(self.b2)
         self.B2Button.setVisible(False)
 
         self.B3Button = QtWidgets.QPushButton(self.centralwidget)
         self.B3Button.setGeometry(355, 280, 80, 80)
         self.B3Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B3Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B3Button.clicked.connect(self.b3)
         self.B3Button.setVisible(False)
 
         self.B4Button = QtWidgets.QPushButton(self.centralwidget)
         self.B4Button.setGeometry(440, 280, 80, 80)
         self.B4Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B4Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B4Button.clicked.connect(self.b4)
         self.B4Button.setVisible(False)
 
         self.B5Button = QtWidgets.QPushButton(self.centralwidget)
         self.B5Button.setGeometry(525, 280, 80, 80)
         self.B5Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B5Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B5Button.clicked.connect(self.b5)
         self.B5Button.setVisible(False)
 
         self.B6Button = QtWidgets.QPushButton(self.centralwidget)
         self.B6Button.setGeometry(610, 280, 80, 80)
         self.B6Button.setStyleSheet(
-            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135)")
+            "background-image:url(wm1.jpg);border-radius : 40; background-color:rgb(222,184,135); font-size:16px; font:bold")
+        self.B6Button.setText("4\n🟣  🟣 \n🟣  🟣")
         self.B6Button.clicked.connect(self.b6)
         self.B6Button.setVisible(False)
 
@@ -474,55 +575,69 @@ class MancalaGui(object):
         self.B4Button.setVisible(value)
         self.B5Button.setVisible(value)
         self.B6Button.setVisible(value)
-        self.A11label.setVisible(value)
-        self.A12label.setVisible(value)
-        self.A13label.setVisible(value)
-        self.A14label.setVisible(value)
-        self.A21label.setVisible(value)
-        self.A22label.setVisible(value)
-        self.A23label.setVisible(value)
-        self.A24label.setVisible(value)
-        self.A31label.setVisible(value)
-        self.A32label.setVisible(value)
-        self.A33label.setVisible(value)
-        self.A34label.setVisible(value)
-        self.A41label.setVisible(value)
-        self.A42label.setVisible(value)
-        self.A43label.setVisible(value)
-        self.A44label.setVisible(value)
-        self.A51label.setVisible(value)
-        self.A52label.setVisible(value)
-        self.A53label.setVisible(value)
-        self.A54label.setVisible(value)
-        self.A61label.setVisible(value)
-        self.A62label.setVisible(value)
-        self.A63label.setVisible(value)
-        self.A64label.setVisible(value)
-        self.B11label.setVisible(value)
-        self.B12label.setVisible(value)
-        self.B13label.setVisible(value)
-        self.B14label.setVisible(value)
-        self.B21label.setVisible(value)
-        self.B22label.setVisible(value)
-        self.B23label.setVisible(value)
-        self.B24label.setVisible(value)
-        self.B31label.setVisible(value)
-        self.B32label.setVisible(value)
-        self.B33label.setVisible(value)
-        self.B34label.setVisible(value)
-        self.B41label.setVisible(value)
-        self.B42label.setVisible(value)
-        self.B43label.setVisible(value)
-        self.B44label.setVisible(value)
-        self.B51label.setVisible(value)
-        self.B52label.setVisible(value)
-        self.B53label.setVisible(value)
-        self.B54label.setVisible(value)
-        self.B61label.setVisible(value)
-        self.B62label.setVisible(value)
-        self.B63label.setVisible(value)
-        self.B64label.setVisible(value)
+        # self.A11label.setVisible(value)
+        # self.A12label.setVisible(value)
+        # self.A13label.setVisible(value)
+        # self.A14label.setVisible(value)
+        # self.A21label.setVisible(value)
+        # self.A22label.setVisible(value)
+        # self.A23label.setVisible(value)
+        # self.A24label.setVisible(value)
+        # self.A31label.setVisible(value)
+        # self.A32label.setVisible(value)
+        # self.A33label.setVisible(value)
+        # self.A34label.setVisible(value)
+        # self.A41label.setVisible(value)
+        # self.A42label.setVisible(value)
+        # self.A43label.setVisible(value)
+        # self.A44label.setVisible(value)
+        # self.A51label.setVisible(value)
+        # self.A52label.setVisible(value)
+        # self.A53label.setVisible(value)
+        # self.A54label.setVisible(value)
+        # self.A61label.setVisible(value)
+        # self.A62label.setVisible(value)
+        # self.A63label.setVisible(value)
+        # self.A64label.setVisible(value)
+        # self.B11label.setVisible(value)
+        # self.B12label.setVisible(value)
+        # self.B13label.setVisible(value)
+        # self.B14label.setVisible(value)
+        # self.B21label.setVisible(value)
+        # self.B22label.setVisible(value)
+        # self.B23label.setVisible(value)
+        # self.B24label.setVisible(value)
+        # self.B31label.setVisible(value)
+        # self.B32label.setVisible(value)
+        # self.B33label.setVisible(value)
+        # self.B34label.setVisible(value)
+        # self.B41label.setVisible(value)
+        # self.B42label.setVisible(value)
+        # self.B43label.setVisible(value)
+        # self.B44label.setVisible(value)
+        # self.B51label.setVisible(value)
+        # self.B52label.setVisible(value)
+        # self.B53label.setVisible(value)
+        # self.B54label.setVisible(value)
+        # self.B61label.setVisible(value)
+        # self.B62label.setVisible(value)
+        # self.B63label.setVisible(value)
+        # self.B64label.setVisible(value)
         self.text_label.setVisible(value)
+        # self.B1_points.setVisible(value)
+        # self.B2_points.setVisible(value)
+        # self.B3_points.setVisible(value)
+        # self.B4_points.setVisible(value)
+        # self.B5_points.setVisible(value)
+        # self.B6_points.setVisible(value)
+        # self.B_points.setVisible(value)
+        # self.A1_points.setVisible(value)
+        # self.A2_points.setVisible(value)
+        # self.A3_points.setVisible(value)
+        # self.A4_points.setVisible(value)
+        # self.A5_points.setVisible(value)
+        # self.A6_points.setVisible(value)
+        # self.A_points.setVisible(value)
 
     def start(self):
         self.startButton.setVisible(False)
@@ -563,9 +678,16 @@ class MancalaGui(object):
         self.centralwidget.setStyleSheet("border-image : url(m1.jpg) 0 0 0 0 stretch stretch;")
         self.set_board_visible(False)
 
+    def draw_points(self,button):
+        points=game.get_points(button)
+        # if points==0:
+
+        # self.labels[0].setGeometry(100,140,50,50)
+
     def play(self):
         self.text_label.setStyleSheet("font: bold; font-size:14px; color:black")
         self.text_label.setText("")
+        ok=1
         global buttons,player
         result = game.update_points(buttons[0], buttons[1], player)
         # print("ce rahat ai")
@@ -573,6 +695,9 @@ class MancalaGui(object):
         if result[0] == 0 and result[1] == 0:
             self.text_label.setStyleSheet(" color:red")
             self.text_label.setText("Nu este randul tau!")
+            buttons[0] = " "
+            buttons[1] = " "
+            ok=0
             QApplication.processEvents()
         if (result[0] == 0 and result[1] == 1) or (result[0] == 4 and result[1] == 2):
             self.text_label.setStyleSheet(" color:red")
@@ -580,12 +705,16 @@ class MancalaGui(object):
             buttons[0] = " "
             buttons[1] = " "
             QApplication.processEvents()
+            ok=0
         if (result[0] == 2 and result[1] == 0) :
             self.text_label.setStyleSheet(" color:red")
             self.text_label.setText("Groapa nu are niciun punct! Te rog sa refaci ultima mutare!")
             buttons[0] = " "
             buttons[1] = " "
+            ok=0
             QApplication.processEvents()
+        if ok==1:
+            button2=buttons[1]
         if result[0] == 1 and result[1] == 0:
             if player == 1:
                 player = 0
@@ -636,10 +765,10 @@ class MancalaGui(object):
                 if opponent == "calculator" and nume == "B":
                     game.move_calculator()
         if result[0] == 1 and result[1] == 3:
-            print("aici????")
             self.text_label.setText("")
             buttons[0]=buttons[1]
             buttons[1]=" "
+            self.draw_points(buttons[0])
         if result[0] == 3:
             if player == 1:
                 nume = "A"
@@ -648,31 +777,77 @@ class MancalaGui(object):
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:green")
             self.text_label.setText("Jocul s-a terminat! Castigatorul este: " + nume + "!")
             QApplication.processEvents()
-
+        if ok==1:
+            return game.get_points(button2)
+        else:
+            return -1
     def a1(self):
         print("a1")
         global buttons, player
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A1"
+            if game.ver_start("A1",player):
+                self.A1Button.setText("0")
         elif buttons[1] == " ":
+            print("DA")
             buttons[1] = "A1"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ": # e al 2 lea buton apasat
+            print("DADADDA")
+            points=self.play()
+            if points==0:
+                self.A1Button.setText("0")
+            elif points==1:
+                self.A1Button.setText("1\n 🟣")
+            elif points==2:
+                self.A1Button.setText("2\n🟣   🟣")
+            elif points==3:
+                self.A1Button.setText("3\n🟣   🟣\n   🟣")
+            elif points==4:
+                self.A1Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points==5:
+                self.A1Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points==6:
+                self.A1Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points>=7:
+                self.A1Button.setText(str(points))
+
+
+
 
 
 
     def a2(self):
         print("a2")
-
         global buttons
         print(buttons)
         if buttons[0] == " ":
+            print("DA A2")
             buttons[0] = "A2"
+            if game.ver_start("A2",player):
+                self.A2Button.setText("0")
         elif buttons[1] == " ":
+            print("DADAD A2")
             buttons[1] = "A2"
         if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+            print("rheberbhefbhj A2")
+            points = self.play()
+            if points == 0:
+                self.A2Button.setText("0")
+            elif points == 1:
+                self.A2Button.setText("1\n 🟣")
+            elif points == 2:
+                self.A2Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.A2Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.A2Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.A2Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.A2Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points>=7:
+                self.A2Button.setText(str(points))
 
     def a3(self):
         print("a3")
@@ -680,10 +855,28 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A3"
+            if game.ver_start("A3", player):
+                self.A3Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "A3"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.A3Button.setText("0")
+            elif points == 1:
+                self.A3Button.setText("1\n 🟣")
+            elif points == 2:
+                self.A3Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.A3Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.A3Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.A3Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.A3Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.A3Button.setText(str(points))
 
     def a4(self):
         print("a4")
@@ -691,10 +884,28 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A4"
+            if game.ver_start("A4", player):
+                self.A4Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "A4"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.A4Button.setText("0")
+            elif points == 1:
+                self.A4Button.setText("1\n 🟣")
+            elif points == 2:
+                self.A4Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.A4Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.A4Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.A4Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.A4Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.A4Button.setText(str(points))
 
     def a5(self):
         print("a5")
@@ -702,10 +913,28 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A5"
+            if game.ver_start("A5", player):
+                self.A5Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "A5"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.A5Button.setText("0")
+            elif points == 1:
+                self.A5Button.setText("1\n 🟣")
+            elif points == 2:
+                self.A5Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.A5Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.A5Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.A5Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.A5Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.A5Button.setText(str(points))
 
     def a6(self):
         print("a6")
@@ -713,10 +942,28 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A6"
+            if game.ver_start("A6", player):
+                self.A6Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "A6"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.A6Button.setText("0")
+            elif points == 1:
+                self.A6Button.setText("1\n 🟣")
+            elif points == 2:
+                self.A6Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.A6Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.A6Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.A6Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.A6Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.A6Button.setText(str(points))
 
     def a(self):
         print("a")
@@ -727,7 +974,23 @@ class MancalaGui(object):
         elif buttons[1] == " ":
             buttons[1] = "A"
         if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+            points = self.play()
+            if points == 0:
+                self.AButton.setText("0")
+            elif points == 1:
+                self.AButton.setText("1\n 🟣")
+            elif points == 2:
+                self.AButton.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.AButton.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.AButton.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.AButton.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.AButton.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points>=7:
+                self.AButton.setText(str(points))
 
     def b(self):
         print("b")
@@ -737,8 +1000,24 @@ class MancalaGui(object):
             buttons[0] = "B"
         elif buttons[1] == " ":
             buttons[1] = "B"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.BButton.setText("0")
+            elif points == 1:
+                self.BButton.setText("1\n 🟣")
+            elif points == 2:
+                self.BButton.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.BButton.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.BButton.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.BButton.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.BButton.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.BButton.setText(str(points))
 
     def b1(self):
         print("b1")
@@ -746,10 +1025,28 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B1"
+            if game.ver_start("B1", player):
+                self.B1Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B1"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B1Button.setText("0")
+            elif points == 1:
+                self.B1Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B1Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B1Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B1Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B1Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B1Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B1Button.setText(str(points))
 
     def b2(self):
         print("b2")
@@ -757,10 +1054,29 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B2"
+            if game.ver_start("B2", player):
+                self.B2Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B2"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B2Button.setText("0")
+            elif points == 1:
+                self.B2Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B2Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B2Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B2Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B2Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B2Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B2Button.setText(str(points))
 
     def b3(self):
         print("b3")
@@ -768,10 +1084,30 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B3"
+            if game.ver_start("B3", player):
+                self.B3Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B3"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B3Button.setText("0")
+            elif points == 1:
+                self.B3Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B3Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B3Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B3Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B3Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B3Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B3Button.setText(str(points))
+
 
     def b4(self):
         print("b4")
@@ -779,10 +1115,29 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B4"
+            if game.ver_start("B4", player):
+                self.B4Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B4"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B4Button.setText("0")
+            elif points == 1:
+                self.B4Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B4Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B4Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B4Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B4Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B4Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B4Button.setText(str(points))
 
     def b5(self):
         print("b5")
@@ -790,10 +1145,29 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B5"
+            if game.ver_start("B5", player):
+                self.B5Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B5"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B5Button.setText("0")
+            elif points == 1:
+                self.B5Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B5Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B5Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B5Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B5Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B5Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B5Button.setText(str(points))
 
     def b6(self):
         print("b6")
@@ -801,10 +1175,29 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B6"
+            if game.ver_start("B6", player):
+                self.B6Button.setText("0")
         elif buttons[1] == " ":
             buttons[1] = "B6"
-        if buttons[0] != " " and buttons[1] != " ":
-            self.play()
+
+        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+            points = self.play()
+            if points == 0:
+                self.B6Button.setText("0")
+            elif points == 1:
+                self.B6Button.setText("1\n 🟣")
+            elif points == 2:
+                self.B6Button.setText("2\n🟣   🟣")
+            elif points == 3:
+                self.B6Button.setText("3\n🟣   🟣\n   🟣")
+            elif points == 4:
+                self.B6Button.setText("4\n🟣   🟣\n🟣   🟣")
+            elif points == 5:
+                self.B6Button.setText("5\n🟣   🟣\n🟣🟣🟣")
+            elif points == 6:
+                self.B6Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            elif points >= 7:
+                self.B6Button.setText(str(points))
 
 
 class MyWindow(QtWidgets.QMainWindow):
