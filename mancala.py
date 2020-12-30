@@ -6,13 +6,15 @@ from PyQt5.QtWidgets import QApplication
 import game
 
 # de facut:
-# "nu este randul tau" dupa apasarea unui buton
-# aduni toate pietrele din groapa opusa..
-# revazut buline
+# groapa goala dupa un buton
+
 
 opponent = "calculator"
 buttons = [" ", " "]
 player = 0
+start=0
+game_over=0
+
 
 
 class MancalaGui(object):
@@ -645,6 +647,11 @@ class MancalaGui(object):
         self.backButton.setVisible(True)
         self.centralwidget.setStyleSheet("border-image:none; background-color: rgb(234, 236, 238);")
         self.set_board_visible(True)
+        global start
+        if start==0:
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:green")
+            self.text_label.setText("Jocul a inceput! Primul este A!")
+            start=1
 
     def rules(self):
         self.startButton.setVisible(False)
@@ -677,37 +684,114 @@ class MancalaGui(object):
         self.rulesButton.setVisible(True)
         self.centralwidget.setStyleSheet("border-image : url(m1.jpg) 0 0 0 0 stretch stretch;")
         self.set_board_visible(False)
+    def set_zero(self):
+        self.A1Button.setText("0")
+        self.A2Button.setText("0")
+        self.A3Button.setText("0")
+        self.A4Button.setText("0")
+        self.A5Button.setText("0")
+        self.A6Button.setText("0")
+        self.B1Button.setText("0")
+        self.B2Button.setText("0")
+        self.B3Button.setText("0")
+        self.B4Button.setText("0")
+        self.B5Button.setText("0")
+        self.B6Button.setText("0")
+    def convert_str_to_button(self,str):
+        if str=="A":
+            return self.AButton
+        if str=="A1":
+            return self.A1Button
+        if str=="A2":
+            return self.A2Button
+        if str=="A3":
+            return self.A3Button
+        if str=="A4":
+            return self.A4Button
+        if str=="A5":
+            return self.A5Button
+        if str=="A6":
+            return self.A6Button
+        if str=="B":
+            return self.BButton
+        if str=="B1":
+            return self.B1Button
+        if str=="B2":
+            return self.B2Button
+        if str=="B3":
+            return self.B3Button
+        if str=="B4":
+            return self.B4Button
+        if str=="B5":
+            return self.B5Button
+        if str=="B6":
+            return self.B6Button
 
-    def draw_points(self,button):
-        points=game.get_points(button)
-        # if points==0:
+    def block_buttons(self):
+        self.A1Button.setDisabled(True)
+        self.A2Button.setDisabled(True)
+        self.A3Button.setDisabled(True)
+        self.A4Button.setDisabled(True)
+        self.A5Button.setDisabled(True)
+        self.A6Button.setDisabled(True)
+        self.AButton.setDisabled(True)
+        self.BButton.setDisabled(True)
+        self.B1Button.setDisabled(True)
+        self.B2Button.setDisabled(True)
+        self.B3Button.setDisabled(True)
+        self.B4Button.setDisabled(True)
+        self.B5Button.setDisabled(True)
+        self.B6Button.setDisabled(True)
 
-        # self.labels[0].setGeometry(100,140,50,50)
+    def convert_points_to_text(self,points):
+        if points == 0:
+            text="0"
+        elif points == 1:
+            text="1\n 🟣"
+        elif points == 2:
+            text="2\n🟣   🟣"
+        elif points == 3:
+            text="3\n🟣   🟣\n   🟣"
+        elif points == 4:
+            text="4\n🟣   🟣\n🟣   🟣"
+        elif points == 5:
+            text="5\n🟣   🟣\n🟣🟣🟣"
+        elif points == 6:
+            text="6\n🟣🟣🟣\n🟣🟣🟣"
+        elif points == 7:
+            text="7\n🟣 \n🟣🟣🟣\n🟣🟣🟣"
+        elif points == 8:
+            text="8\n🟣   🟣\n🟣🟣🟣\n🟣🟣🟣"
+        elif points == 9:
+            text="9\n🟣🟣🟣\n🟣🟣🟣\n🟣🟣🟣"
+        else:
+            text=str(points)
+        return text
 
     def play(self):
         self.text_label.setStyleSheet("font: bold; font-size:14px; color:black")
         self.text_label.setText("")
         ok=1
-        global buttons,player
+        exception2=0
+        global buttons,player,start,game_over
         result = game.update_points(buttons[0], buttons[1], player)
-        # print("ce rahat ai")
         print("result e ",result[0],result[1])
         if result[0] == 0 and result[1] == 0:
-            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
             self.text_label.setText("Nu este randul tau!")
             buttons[0] = " "
             buttons[1] = " "
             ok=0
             QApplication.processEvents()
         if (result[0] == 0 and result[1] == 1) or (result[0] == 4 and result[1] == 2):
-            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
             self.text_label.setText("Nu ai mutat conform regulilor! Te rog sa refaci ultima mutare!")
-            buttons[0] = " "
+            # buttons[0] = " "
             buttons[1] = " "
             QApplication.processEvents()
             ok=0
         if (result[0] == 2 and result[1] == 0) :
-            self.text_label.setStyleSheet(" color:red")
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
             self.text_label.setText("Groapa nu are niciun punct! Te rog sa refaci ultima mutare!")
             buttons[0] = " "
             buttons[1] = " "
@@ -722,6 +806,7 @@ class MancalaGui(object):
             else:
                 player = 1
                 nume = "B"
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
             self.text_label.setText("Este randul lui " + nume)
             buttons[0] = " "
             buttons[1] = " "
@@ -730,24 +815,30 @@ class MancalaGui(object):
             if opponent == "calculator" and nume == "B":
                 game.move_calculator()
         if result[0] == 1 and result[1] == 1:
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
             if opponent == "calculator" and player == "B":
                 self.text_label.setText("Ultima piatra a ajuns in banca calculatorului, va muta din nou!")
                 buttons[0] = " "
                 buttons[1] = " "
                 game.move_calculator()
-
             else:
                 self.text_label.setText("Ultima piatra a ajuns in banca ta, poti muta din nou!")
                 buttons[0] = " "
                 buttons[1] = " "
         QApplication.processEvents()
         if result[0] == 1 and result[1] == 2:
+            exception2=1
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
             if player == 1:
                 player = 0
                 nume = "A"
+                points_B=game.get_points("B")
+                self.BButton.setText(self.convert_points_to_text(points_B))
             else:
                 player = 1
                 nume = "B"
+                points_A = game.get_points("A")
+                self.AButton.setText(self.convert_points_to_text(points_A))
             if opponent == "calculator" and nume == "A":
                 self.text_label.setText(
                     "Calculatorul aduna toate pietrele din groapa opusa+ultima piatra. Urmeaza randul tau")
@@ -764,18 +855,33 @@ class MancalaGui(object):
                 QApplication.processEvents()
                 if opponent == "calculator" and nume == "B":
                     game.move_calculator()
+            # exp2b=game.get_exc2_buttons()
+            return -2
         if result[0] == 1 and result[1] == 3:
-            self.text_label.setText("")
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
+            value=game.get_value()
+            if value!=1:
+                self.text_label.setText("Mai ai in mana "+str(value)+" pietre!")
+            else:
+                self.text_label.setText("Mai ai in mana o piatra!")
             buttons[0]=buttons[1]
             buttons[1]=" "
-            self.draw_points(buttons[0])
+
         if result[0] == 3:
+            game_over=1
             if player == 1:
                 nume = "A"
             else:
                 nume = "B"
-            self.text_label.setStyleSheet("font: bold; font-size:16px; color:green")
-            self.text_label.setText("Jocul s-a terminat! Castigatorul este: " + nume + "!")
+            self.text_label.setStyleSheet("font: bold; font-size:20px; color:green")
+            self.text_label.setText("Jocul s-a terminat! Castigatorul este " + nume + "!")
+            self.block_buttons()
+            a=game.get_points("A")
+            b=game.get_points("B")
+            print(a,b,"puncte")
+            self.AButton.setText(str(a))
+            self.BButton.setText(str(b))
+            self.set_zero()
             QApplication.processEvents()
         if ok==1:
             return game.get_points(button2)
@@ -787,28 +893,25 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A1"
+            self.text_label.setText(" ")
             if game.ver_start("A1",player):
                 self.A1Button.setText("0")
+            else:
+                if game.check_player(player, "A1") == 1 or game.check_player_start(player, "A1") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0]=" "
         elif buttons[1] == " ":
             print("DA")
             buttons[1] = "A1"
         if buttons[0] != " " and buttons[1] != " ": # e al 2 lea buton apasat
             print("DADADDA")
             points=self.play()
-            if points==0:
-                self.A1Button.setText("0")
-            elif points==1:
-                self.A1Button.setText("1\n 🟣")
-            elif points==2:
-                self.A1Button.setText("2\n🟣   🟣")
-            elif points==3:
-                self.A1Button.setText("3\n🟣   🟣\n   🟣")
-            elif points==4:
-                self.A1Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points==5:
-                self.A1Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points==6:
-                self.A1Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points>=0 and points<=6:
+                self.A1Button.setText(self.convert_points_to_text(points))
             elif points>=7:
                 self.A1Button.setText(str(points))
 
@@ -824,29 +927,23 @@ class MancalaGui(object):
         if buttons[0] == " ":
             print("DA A2")
             buttons[0] = "A2"
+            self.text_label.setText(" ")
             if game.ver_start("A2",player):
                 self.A2Button.setText("0")
+            else:
+                if game.check_player(player, "A2") == 1 or game.check_player_start(player, "A2") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             print("DADAD A2")
             buttons[1] = "A2"
         if buttons[0] != " " and buttons[1] != " ":
             print("rheberbhefbhj A2")
             points = self.play()
-            if points == 0:
-                self.A2Button.setText("0")
-            elif points == 1:
-                self.A2Button.setText("1\n 🟣")
-            elif points == 2:
-                self.A2Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.A2Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.A2Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.A2Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.A2Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
-            elif points>=7:
+            if points >= 0 and points <= 6:
+                self.A2Button.setText(self.convert_points_to_text(points))
+            elif points >= 7:
                 self.A2Button.setText(str(points))
 
     def a3(self):
@@ -855,26 +952,23 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A3"
+            self.text_label.setText(" ")
             if game.ver_start("A3", player):
                 self.A3Button.setText("0")
+            else:
+                if game.check_player(player,"A3")==1 or game.check_player_start(player,"A3")==0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "A3"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.A3Button.setText("0")
-            elif points == 1:
-                self.A3Button.setText("1\n 🟣")
-            elif points == 2:
-                self.A3Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.A3Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.A3Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.A3Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.A3Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.A3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A3Button.setText(str(points))
 
@@ -884,26 +978,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A4"
+            self.text_label.setText(" ")
+            self.text_label.setText(" ")
             if game.ver_start("A4", player):
                 self.A4Button.setText("0")
+            else:
+                if game.check_player(player, "A4") == 1 or game.check_player_start(player, "A4") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "A4"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.A4Button.setText("0")
-            elif points == 1:
-                self.A4Button.setText("1\n 🟣")
-            elif points == 2:
-                self.A4Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.A4Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.A4Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.A4Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.A4Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.A4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A4Button.setText(str(points))
 
@@ -913,27 +1005,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A5"
+            self.text_label.setText(" ")
             if game.ver_start("A5", player):
                 self.A5Button.setText("0")
+            else:
+                if game.check_player(player, "A5") == 1 or game.check_player_start(player, "A5") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "A5"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.A5Button.setText("0")
-            elif points == 1:
-                self.A5Button.setText("1\n 🟣")
-            elif points == 2:
-                self.A5Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.A5Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.A5Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.A5Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.A5Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
-            elif points >= 7:
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points>=0 and points<=6:
+                self.A5Button.setText(self.convert_points_to_text(points))
+            elif points>=7:
                 self.A5Button.setText(str(points))
 
     def a6(self):
@@ -942,26 +1031,23 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "A6"
+            self.text_label.setText(" ")
             if game.ver_start("A6", player):
                 self.A6Button.setText("0")
+            else:
+                if game.check_player(player, "A6") == 1 or game.check_player_start(player, "A6") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "A6"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.A6Button.setText("0")
-            elif points == 1:
-                self.A6Button.setText("1\n 🟣")
-            elif points == 2:
-                self.A6Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.A6Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.A6Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.A6Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.A6Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.A6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A6Button.setText(str(points))
 
@@ -970,26 +1056,19 @@ class MancalaGui(object):
         global buttons
         print(buttons)
         if buttons[0] == " ":
-            buttons[0] = "A"
+            # buttons[0] = "A"
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+            self.text_label.setText("Nu poti incepe cu gropile!")
         elif buttons[1] == " ":
             buttons[1] = "A"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
-            if points == 0:
-                self.AButton.setText("0")
-            elif points == 1:
-                self.AButton.setText("1\n 🟣")
-            elif points == 2:
-                self.AButton.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.AButton.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.AButton.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.AButton.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.AButton.setText("6\n🟣🟣🟣\n🟣🟣🟣")
-            elif points>=7:
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points>=0 and points<=9:
+                self.AButton.setText(self.convert_points_to_text(points))
+            elif points>=10:
                 self.AButton.setText(str(points))
 
     def b(self):
@@ -997,26 +1076,19 @@ class MancalaGui(object):
         global buttons
         print(buttons)
         if buttons[0] == " ":
-            buttons[0] = "B"
+            # buttons[0] = "B"
+            self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+            self.text_label.setText("Nu poti incepe cu gropile!")
         elif buttons[1] == " ":
             buttons[1] = "B"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.BButton.setText("0")
-            elif points == 1:
-                self.BButton.setText("1\n 🟣")
-            elif points == 2:
-                self.BButton.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.BButton.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.BButton.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.BButton.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.BButton.setText("6\n🟣🟣🟣\n🟣🟣🟣")
-            elif points >= 7:
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points>=0 and points<=9:
+                self.BButton.setText(self.convert_points_to_text(points))
+            elif points >= 10:
                 self.BButton.setText(str(points))
 
     def b1(self):
@@ -1025,26 +1097,23 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B1"
+            self.text_label.setText(" ")
             if game.ver_start("B1", player):
                 self.B1Button.setText("0")
+            else:
+                if game.check_player(player, "B1") == 1 or game.check_player_start(player, "B1") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B1"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B1Button.setText("0")
-            elif points == 1:
-                self.B1Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B1Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B1Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B1Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B1Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B1Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B1Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B1Button.setText(str(points))
 
@@ -1054,27 +1123,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B2"
+            self.text_label.setText(" ")
             if game.ver_start("B2", player):
                 self.B2Button.setText("0")
+            else:
+                if game.check_player(player, "B2") == 1 or game.check_player_start(player, "B2") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B2"
 
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B2Button.setText("0")
-            elif points == 1:
-                self.B2Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B2Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B2Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B2Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B2Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B2Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B2Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B2Button.setText(str(points))
 
@@ -1084,27 +1150,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B3"
+            self.text_label.setText(" ")
             if game.ver_start("B3", player):
                 self.B3Button.setText("0")
+            else:
+                if game.check_player(player, "B3") == 1 or game.check_player_start(player, "B3") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B3"
 
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B3Button.setText("0")
-            elif points == 1:
-                self.B3Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B3Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B3Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B3Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B3Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B3Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B3Button.setText(str(points))
 
@@ -1115,29 +1178,27 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B4"
+            self.text_label.setText(" ")
             if game.ver_start("B4", player):
                 self.B4Button.setText("0")
+            else:
+                if game.check_player(player, "B4") == 1 or game.check_player_start(player, "B4") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B4"
 
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B4Button.setText("0")
-            elif points == 1:
-                self.B4Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B4Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B4Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B4Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B4Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B4Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B4Button.setText(str(points))
+
 
     def b5(self):
         print("b5")
@@ -1145,27 +1206,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B5"
+            self.text_label.setText(" ")
             if game.ver_start("B5", player):
                 self.B5Button.setText("0")
+            else:
+                if game.check_player(player, "B5") == 1 or game.check_player_start(player, "B5") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B5"
 
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B5Button.setText("0")
-            elif points == 1:
-                self.B5Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B5Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B5Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B5Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B5Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B5Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B5Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B5Button.setText(str(points))
 
@@ -1175,27 +1233,24 @@ class MancalaGui(object):
         print(buttons)
         if buttons[0] == " ":
             buttons[0] = "B6"
+            self.text_label.setText(" ")
             if game.ver_start("B6", player):
                 self.B6Button.setText("0")
+            else:
+                if game.check_player(player, "B6") == 1 or game.check_player_start(player, "B6") == 0:
+                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+                    self.text_label.setText("Nu este randul tau!")
+                    buttons[0] = " "
         elif buttons[1] == " ":
             buttons[1] = "B6"
 
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
             points = self.play()
-            if points == 0:
-                self.B6Button.setText("0")
-            elif points == 1:
-                self.B6Button.setText("1\n 🟣")
-            elif points == 2:
-                self.B6Button.setText("2\n🟣   🟣")
-            elif points == 3:
-                self.B6Button.setText("3\n🟣   🟣\n   🟣")
-            elif points == 4:
-                self.B6Button.setText("4\n🟣   🟣\n🟣   🟣")
-            elif points == 5:
-                self.B6Button.setText("5\n🟣   🟣\n🟣🟣🟣")
-            elif points == 6:
-                self.B6Button.setText("6\n🟣🟣🟣\n🟣🟣🟣")
+            if points==-2:
+                ex2b=game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
+            if points >= 0 and points <= 6:
+                self.B6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B6Button.setText(str(points))
 
