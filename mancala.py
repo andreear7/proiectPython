@@ -1,12 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 # import os
+import time
 from PyQt5.QtWidgets import QApplication
 
 import game
 
 # de facut:
-# groapa goala dupa un buton
+# curatat cod + documentatie pep
 
 
 opponent = "calculator"
@@ -14,6 +15,7 @@ buttons = [" ", " "]
 player = 0
 start=0
 game_over=0
+calc_moved=0
 
 
 
@@ -66,7 +68,7 @@ class MancalaGui(object):
         self.text_label = QtWidgets.QLabel(self.centralwidget)
         self.text_label.setStyleSheet(
             "font: bold; font-size:14px;background-color: rgb(234, 236, 238); border-image:none")
-        self.text_label.setGeometry(QtCore.QRect(70, 50, 700, 20))
+        self.text_label.setGeometry(QtCore.QRect(70, 50, 750, 20))
         self.text_label.setAlignment(QtCore.Qt.AlignCenter)
         self.text_label.setText("")
         self.text_label.setVisible(False)
@@ -678,6 +680,8 @@ class MancalaGui(object):
                                "banca sa a castigat!")
 
     def back(self):
+        if start==1:
+            self.startButton.setText("Inapoi la joc")
         self.reg_label.setVisible(False)
         self.backButton.setVisible(False)
         self.startButton.setVisible(True)
@@ -773,8 +777,11 @@ class MancalaGui(object):
         self.text_label.setText("")
         ok=1
         exception2=0
-        global buttons,player,start,game_over
-        result = game.update_points(buttons[0], buttons[1], player)
+        global buttons,player,start,game_over,calc_moved
+        if opponent=="om" or ( opponent=="calculator" and player==0):
+            result = game.update_points(buttons[0], buttons[1], player)
+        elif opponent=="calculator" and player==1:
+            result=game.get_result_calc()
         print("result e ",result[0],result[1])
         if result[0] == 0 and result[1] == 0:
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
@@ -808,25 +815,43 @@ class MancalaGui(object):
                 nume = "B"
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
             self.text_label.setText("Este randul lui " + nume)
-            buttons[0] = " "
-            buttons[1] = " "
+
             game.set_player(player)
             QApplication.processEvents()
             if opponent == "calculator" and nume == "B":
+                if game.get_points(buttons[1])<=6 or ( buttons[1]=="A" or buttons[1]=="B"):
+                    self.convert_str_to_button(buttons[1]).setText(self.convert_points_to_text(game.get_points(buttons[1])))
+                else:
+                    self.convert_str_to_button(buttons[1]).setText(str(game.get_points(buttons[1])))
+                QApplication.processEvents()
+                # time.sleep(1)
                 game.move_calculator()
+                calc_moved=1
+                self.update_buttons_calc()
+            buttons[0] = " "
+            buttons[1] = " "
         if result[0] == 1 and result[1] == 1:
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
-            if opponent == "calculator" and player == "B":
+            if opponent == "calculator" and player == 1:
                 self.text_label.setText("Ultima piatra a ajuns in banca calculatorului, va muta din nou!")
                 buttons[0] = " "
+                if game.get_points(buttons[1])<=6 or ( buttons[1]=="A" or buttons[1]=="B"):
+                    self.convert_str_to_button(buttons[1]).setText(self.convert_points_to_text(game.get_points(buttons[1])))
+                else:
+                    self.convert_str_to_button(buttons[1]).setText(str(game.get_points(buttons[1])))
                 buttons[1] = " "
+                QApplication.processEvents()
+                # time.sleep(1)
                 game.move_calculator()
+                calc_moved=1
+                self.update_buttons_calc()
             else:
                 self.text_label.setText("Ultima piatra a ajuns in banca ta, poti muta din nou!")
                 buttons[0] = " "
                 buttons[1] = " "
         QApplication.processEvents()
         if result[0] == 1 and result[1] == 2:
+
             exception2=1
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
             if player == 1:
@@ -841,20 +866,35 @@ class MancalaGui(object):
                 self.AButton.setText(self.convert_points_to_text(points_A))
             if opponent == "calculator" and nume == "A":
                 self.text_label.setText(
-                    "Calculatorul aduna toate pietrele din groapa opusa+ultima piatra. Urmeaza randul tau")
+                    "Calculatorul aduna toate pietrele din groapa opusa+ultima piatra. Urmeaza randul tau!")
+                time.sleep(1)
                 buttons[0] = " "
                 buttons[1] = " "
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
                 game.set_player(player)
                 QApplication.processEvents()
             else:
                 self.text_label.setText(
                     "Aduni toate pietrele din groapa opusa+ultima piatra. Urmeaza randul lui " + nume)
+                time.sleep(1)
                 buttons[0] = " "
+                if game.get_points(buttons[1])<=6 or ( buttons[1]=="A" or buttons[1]=="B"):
+                    self.convert_str_to_button(buttons[1]).setText(self.convert_points_to_text(game.get_points(buttons[1])))
+                else:
+                    self.convert_str_to_button(buttons[1]).setText(str(game.get_points(buttons[1])))
                 buttons[1] = " "
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
                 game.set_player(player)
                 QApplication.processEvents()
                 if opponent == "calculator" and nume == "B":
+                    # time.sleep(1)
                     game.move_calculator()
+                    calc_moved=1
+                    self.update_buttons_calc()
+
+
             # exp2b=game.get_exc2_buttons()
             return -2
         if result[0] == 1 and result[1] == 3:
@@ -887,6 +927,59 @@ class MancalaGui(object):
             return game.get_points(button2)
         else:
             return -1
+
+    def set_text_label_err(self,text):
+        self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
+        self.text_label.setText(text)
+        buttons[0] = " "
+
+    def update_buttons_calc(self):
+
+        global buttons, player, start, game_over
+        # self.A1Button.setText(self.convert_points_to_text(game.get_points("A1")))
+        # self.A2Button.setText(self.convert_points_to_text(game.get_points("A2")))
+        # self.A3Button.setText(self.convert_points_to_text(game.get_points("A3")))
+        # self.A4Button.setText(self.convert_points_to_text(game.get_points("A4")))
+        # self.A5Button.setText(self.convert_points_to_text(game.get_points("A5")))
+        # self.A6Button.setText(self.convert_points_to_text(game.get_points("A6")))
+        # self.AButton.setText(self.convert_points_to_text(game.get_points("A")))
+        # self.B1Button.setText(self.convert_points_to_text(game.get_points("B1")))
+        # self.B2Button.setText(self.convert_points_to_text(game.get_points("B2")))
+        # self.B3Button.setText(self.convert_points_to_text(game.get_points("B3")))
+        # self.B4Button.setText(self.convert_points_to_text(game.get_points("B4")))
+        # self.B5Button.setText(self.convert_points_to_text(game.get_points("B5")))
+        # self.B6Button.setText(self.convert_points_to_text(game.get_points("B6")))
+        # self.BButton.setText(self.convert_points_to_text(game.get_points("B")))
+        time.sleep(1)
+        buttons_to_update=game.get_buttons_clicked_by_calc()
+        for button in buttons_to_update:
+            time.sleep(1)
+            QApplication.processEvents()
+            if game.get_points(button)<=6 or ( button=="A" or button=="B"):
+                self.convert_str_to_button(button).setText(self.convert_points_to_text(game.get_points(button)))
+            else:
+                self.convert_str_to_button(button).setText(str(game.get_points(button)))
+        time.sleep(1)
+        buttons=game.get_buttons_calculator()
+        self.play()
+        # text=self.convert_points_to_text(game.get_points(button1))
+        # self.convert_str_to_button(button1).setText(text)
+        # text=self.convert_points_to_text(game.get_points(button2))
+        # self.convert_str_to_button(button2).setText(text)
+        # player=game.get_player()
+        # if player==0:
+        #     self.text_label.setStyleSheet("font: bold; font-size:16px; color:black")
+        #     self.text_label.setText("Este randul tau!")
+        #     player=1
+
+    def calc_moved_updater(self):
+        global calc_moved
+        if calc_moved:
+            # game.move_calculator()
+            calc_moved = 0
+            self.update_buttons_calc()
+
+
     def a1(self):
         print("a1")
         global buttons, player
@@ -898,9 +991,9 @@ class MancalaGui(object):
                 self.A1Button.setText("0")
             else:
                 if game.check_player(player, "A1") == 1 or game.check_player_start(player, "A1") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0]=" "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A1")==0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             print("DA")
             buttons[1] = "A1"
@@ -914,6 +1007,7 @@ class MancalaGui(object):
                 self.A1Button.setText(self.convert_points_to_text(points))
             elif points>=7:
                 self.A1Button.setText(str(points))
+            # self.calc_moved_updater()
 
 
 
@@ -932,19 +1026,24 @@ class MancalaGui(object):
                 self.A2Button.setText("0")
             else:
                 if game.check_player(player, "A2") == 1 or game.check_player_start(player, "A2") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A2") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             print("DADAD A2")
             buttons[1] = "A2"
         if buttons[0] != " " and buttons[1] != " ":
             print("rheberbhefbhj A2")
             points = self.play()
+            if points == -2:
+                ex2b = game.get_exc2_buttons()
+                self.convert_str_to_button(ex2b[1]).setText("0")
             if points >= 0 and points <= 6:
                 self.A2Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A2Button.setText(str(points))
+            # self.calc_moved_updater()
+
 
     def a3(self):
         print("a3")
@@ -957,9 +1056,9 @@ class MancalaGui(object):
                 self.A3Button.setText("0")
             else:
                 if game.check_player(player,"A3")==1 or game.check_player_start(player,"A3")==0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A3") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "A3"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -971,6 +1070,7 @@ class MancalaGui(object):
                 self.A3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A3Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def a4(self):
         print("a4")
@@ -984,9 +1084,9 @@ class MancalaGui(object):
                 self.A4Button.setText("0")
             else:
                 if game.check_player(player, "A4") == 1 or game.check_player_start(player, "A4") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A4") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "A4"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -998,6 +1098,7 @@ class MancalaGui(object):
                 self.A4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A4Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def a5(self):
         print("a5")
@@ -1010,9 +1111,9 @@ class MancalaGui(object):
                 self.A5Button.setText("0")
             else:
                 if game.check_player(player, "A5") == 1 or game.check_player_start(player, "A5") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A5") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "A5"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -1024,6 +1125,7 @@ class MancalaGui(object):
                 self.A5Button.setText(self.convert_points_to_text(points))
             elif points>=7:
                 self.A5Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def a6(self):
         print("a6")
@@ -1036,9 +1138,9 @@ class MancalaGui(object):
                 self.A6Button.setText("0")
             else:
                 if game.check_player(player, "A6") == 1 or game.check_player_start(player, "A6") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("A6") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "A6"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -1050,6 +1152,7 @@ class MancalaGui(object):
                 self.A6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A6Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def a(self):
         print("a")
@@ -1058,7 +1161,7 @@ class MancalaGui(object):
         if buttons[0] == " ":
             # buttons[0] = "A"
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-            self.text_label.setText("Nu poti incepe cu gropile!")
+            self.text_label.setText("Nu poti incepe cu bancile!")
         elif buttons[1] == " ":
             buttons[1] = "A"
         if buttons[0] != " " and buttons[1] != " ":
@@ -1070,6 +1173,7 @@ class MancalaGui(object):
                 self.AButton.setText(self.convert_points_to_text(points))
             elif points>=10:
                 self.AButton.setText(str(points))
+            # self.calc_moved_updater()
 
     def b(self):
         print("b")
@@ -1078,7 +1182,7 @@ class MancalaGui(object):
         if buttons[0] == " ":
             # buttons[0] = "B"
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-            self.text_label.setText("Nu poti incepe cu gropile!")
+            self.text_label.setText("Nu poti incepe cu bancile!")
         elif buttons[1] == " ":
             buttons[1] = "B"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -1090,6 +1194,7 @@ class MancalaGui(object):
                 self.BButton.setText(self.convert_points_to_text(points))
             elif points >= 10:
                 self.BButton.setText(str(points))
+            # self.calc_moved_updater()
 
     def b1(self):
         print("b1")
@@ -1102,9 +1207,9 @@ class MancalaGui(object):
                 self.B1Button.setText("0")
             else:
                 if game.check_player(player, "B1") == 1 or game.check_player_start(player, "B1") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B1") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B1"
         if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
@@ -1116,6 +1221,7 @@ class MancalaGui(object):
                 self.B1Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B1Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def b2(self):
         print("b2")
@@ -1128,9 +1234,9 @@ class MancalaGui(object):
                 self.B2Button.setText("0")
             else:
                 if game.check_player(player, "B2") == 1 or game.check_player_start(player, "B2") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B2") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B2"
 
@@ -1143,6 +1249,7 @@ class MancalaGui(object):
                 self.B2Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B2Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def b3(self):
         print("b3")
@@ -1155,9 +1262,9 @@ class MancalaGui(object):
                 self.B3Button.setText("0")
             else:
                 if game.check_player(player, "B3") == 1 or game.check_player_start(player, "B3") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B3") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B3"
 
@@ -1170,6 +1277,7 @@ class MancalaGui(object):
                 self.B3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B3Button.setText(str(points))
+            # self.calc_moved_updater()
 
 
     def b4(self):
@@ -1183,9 +1291,9 @@ class MancalaGui(object):
                 self.B4Button.setText("0")
             else:
                 if game.check_player(player, "B4") == 1 or game.check_player_start(player, "B4") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B4") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B4"
 
@@ -1198,6 +1306,7 @@ class MancalaGui(object):
                 self.B4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B4Button.setText(str(points))
+            # self.calc_moved_updater()
 
 
     def b5(self):
@@ -1211,9 +1320,9 @@ class MancalaGui(object):
                 self.B5Button.setText("0")
             else:
                 if game.check_player(player, "B5") == 1 or game.check_player_start(player, "B5") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B5") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B5"
 
@@ -1226,6 +1335,7 @@ class MancalaGui(object):
                 self.B5Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B5Button.setText(str(points))
+            # self.calc_moved_updater()
 
     def b6(self):
         print("b6")
@@ -1238,9 +1348,9 @@ class MancalaGui(object):
                 self.B6Button.setText("0")
             else:
                 if game.check_player(player, "B6") == 1 or game.check_player_start(player, "B6") == 0:
-                    self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
-                    self.text_label.setText("Nu este randul tau!")
-                    buttons[0] = " "
+                    self.set_text_label_err("Ai inceput de pe o groapa care nu este a ta!")
+                elif game.get_points("B6") == 0:
+                    self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B6"
 
@@ -1253,6 +1363,7 @@ class MancalaGui(object):
                 self.B6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B6Button.setText(str(points))
+            # self.calc_moved_updater()
 
 
 class MyWindow(QtWidgets.QMainWindow):

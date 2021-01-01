@@ -1,7 +1,7 @@
 import random
+import mancala
 
-# de facut:
-# player vs computer
+
 
 points_dict = {"B1": 4, "B2": 4, "B3": 4, "B4": 4, "B5": 4, "B6": 4, "B": 0, "A6": 4, "A5": 4, "A4": 4, "A3": 4,
                "A2": 4, "A1": 4, "A": 0}
@@ -11,20 +11,24 @@ labels = {"B1": ["b11", "b12", "b13", "b14"], "B2": ["b21", "b22", "b23", "b24"]
           "B": [], "A6": ["a61", "a62", "a63", "a64"], "A5": ["a51", "a52", "a53", "a54"],
           "A4": ["a41", "a42", "a43", "a44"], "A3": ["a31", "a32", "a33", "a34"],
           "A2": ["a21", "a22", "a23", "a24"], "A1": ["a11", "a12", "a13", "a14"], "A": []}
+buttons_clicked_by_calc=[]
 player_0 = True
 player_1 = False
 value = 0
 opponent = "calculator"  # care va fi player_1
-button_2_calculator = 0
+buttons_calculator = ["",""]
 initial_button = "A1"
 current_labels = []
 exception_2_buttons=[]
+result_calc=[]
 
-
+def get_buttons_clicked_by_calc():
+    return buttons_clicked_by_calc
 def set_opponent(oponentul):
     global oponent
     oponent = oponentul
-
+def get_buttons_calculator():
+    return buttons_calculator
 def get_value():
     return value
 def set_player(player):
@@ -33,7 +37,8 @@ def set_player(player):
         player_0 = True
     else:
         player_1 = True
-
+def get_result_calc():
+    return result_calc
 
 def get_player():
     if player_1 is True:
@@ -90,9 +95,10 @@ def check_exceptions(player, button):
     if (player == 1 and points_dict[button] == 0 and "B" in button):
         oponent_button = "A" + button[1]
         return (2, oponent_button)  # regula 2- va lua toate pietrele din groapa opusa
-    elif (player == 0 and points_dict[button] == 0 and "A" in button):
+    if (player == 0 and points_dict[button] == 0 and "A" in button):
         oponent_button = "B" + button[1]
         return (2, oponent_button)  # regula 2- va lua toate pietrele din groapa opusa
+    print("nicio exceptie")
     return (0, 0)  # nicio exceptie
 
 
@@ -117,8 +123,9 @@ def check_game_over():
 
 def move_calculator():
     print("move_calculator")
-    global button_2_calculator
+    global buttons_calculator,result_calc,buttons_clicked_by_calc
     if value == 0:  # trebuie sa aleg un buton de pe care incep
+        buttons_clicked_by_calc.clear()
         button = random.randint(1, 6)
         button1 = "B" + str(button)
         while points_dict[button1] == 0:
@@ -129,22 +136,42 @@ def move_calculator():
             button2 = "B" + str(button)
         else:
             button2 = "B"
-        button_2_calculator = button2
-        update_points(button1, button2, 1)
+        buttons_calculator[0]=button1
+        buttons_calculator[1] = button2
+        buttons_clicked_by_calc.append(button1)
+        buttons_clicked_by_calc.append(button2)
+        result_calc=update_points(button1, button2, 1)
+
     while value != 0:
-        button1 = button_2_calculator
-        if button_2_calculator == "B":
+        print("b2cald",buttons_calculator[1])
+        button1 = buttons_calculator[1]
+        buttons_calculator[0]=buttons_calculator[1]
+        if buttons_calculator[1] == "B":
             button2 = "A6"
-        elif button_2_calculator == "A1":
+        elif buttons_calculator[1] == "A1":
             button2 = "B1"
-        else:
-            button2 = "B" + str(int(button_2_calculator[1]) + 1)
-        update_points(button1, button2, 1)
+        elif buttons_calculator[1]=="B6":
+            button2="B"
+        elif "A" in buttons_calculator[1]:
+            print("inainte",buttons_calculator[1])
+            button2 = "A" + str(int(buttons_calculator[1][1]) -1)
+            print("but2calc",button2)
+        elif "B" in buttons_calculator[1]:
+            print("inainte",buttons_calculator[1])
+            button2 = "B" + str(int(buttons_calculator[1][1]) +1)
+            print("but2calc",button2)
+        buttons_calculator[1]=button2
+        buttons_clicked_by_calc.append(button2)
+        # mancala.update_buttons_and_move_calc(button1,button2)
+        result_calc=update_points(button1, button2, 1)
+        # mancala.move_calc(button1,button2)
+    # buttons_clicked_by_calc.clear()
+
 
 
 def update_labels(inceput, button1, button2):
     global initial_button, current_labels
-    print("inceput= ",inceput)
+    print("inceput=",inceput)
     if inceput == 1:
         points_dict[button1] = 0
         # current_labels = labels[button1]
@@ -228,6 +255,7 @@ def update_points(button1, button2, player):
                     return (3, get_winner())
                 return (1, 1)  # a mutat bine si exceptia e 1 => i se reia randul
             elif exception[0] == 2:
+                print("exceptia2")
                 exception_2_buttons=[button1,exception[1]]
                 if player == 1:
                     player_1 = False
@@ -243,6 +271,8 @@ def update_points(button1, button2, player):
                     # labels["A"].append(current_labels[0])
                 # points_dict[button1] = points_dict[button1] - 1
                 # current_labels.pop(0)
+                if initial_button==button1:
+                    points_dict[button1] = points_dict[button1] - 1
                 points_dict[exception[1]] = 0
                 # labels[exception[1]] = []
                 # print("returnez 12")
