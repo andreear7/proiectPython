@@ -1,24 +1,19 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import time
 import sys
 from PyQt5.QtWidgets import QApplication
 import game
-
-# de facut:
-# curatat cod + documentatie pep
-
 
 opponent = "calculator"
 buttons = [" ", " "]
 player = 0
 start = 0
 game_over = 0
-calc_moved = 0
 
 
 class MancalaGui(object):
 
-    def setup_ui(self, mancala):
+    def setup_game_ui(self, mancala):
         """
             seteaza elementele legate de interfata
         """
@@ -384,11 +379,12 @@ class MancalaGui(object):
             functia comunica cu "game.py" pentru a actualiza in interfata punctele jucatorilor si pentru
             a-i informa starea jocului si rezultatul mutarilor
             returneaza: numarul de puncte pentru butonul apasat daca mutarea e corecta, -1 in caz contrar
+                        -2 daca jocul s-a terminat
         """
         self.text_label.setStyleSheet("font: bold; font-size:14px; color:black")
         self.text_label.setText("")
         ok = 1
-        global buttons, player, start, game_over, calc_moved
+        global buttons, player, start, game_over
         # apeleaza functia update_points din game.py pentru a afla care e rezultatul mutarii
         # rezultatul are 2 componente
         if opponent == "om" or (opponent == "calculator" and player == 0):
@@ -413,7 +409,7 @@ class MancalaGui(object):
             QApplication.processEvents()
             ok = 0
         # 2,0 semnifica incercarea de inceput de la o groapa fara puncte
-        if (result[0] == 2 and result[1] == 0):
+        if result[0] == 2 and result[1] == 0:
             self.text_label.setStyleSheet("font: bold; font-size:16px; color:red")
             self.text_label.setText("Groapa nu are niciun punct! Te rog sa refaci ultima mutare!")
             buttons[0] = " "
@@ -448,7 +444,6 @@ class MancalaGui(object):
                     self.convert_str_to_button(buttons[1]).setText(str(game.get_points(buttons[1])))
                 QApplication.processEvents()
                 game.move_calculator()
-                calc_moved = 1
                 # se face update la textul butoanelor "apasate" de calculator
                 self.update_buttons_calc()
             buttons[0] = " "
@@ -469,7 +464,6 @@ class MancalaGui(object):
                 buttons[1] = " "
                 QApplication.processEvents()
                 game.move_calculator()
-                calc_moved = 1
                 self.update_buttons_calc()
             else:
                 self.text_label.setText("Ultima piatra a ajuns in banca ta, poti muta din nou!")
@@ -521,7 +515,6 @@ class MancalaGui(object):
                 # mutarea acestuia si apoi se actualizeaza punctele din butoanele "apasate" de el
                 if opponent == "calculator" and nume == "B":
                     game.move_calculator()
-                    calc_moved = 1
                     self.update_buttons_calc()
         # 1,3 semnifica o mutare corecta fara exceptii si in curs de derulare
         # se actualizeaza numarul de pietre care mai trebuie plasate in gropi/banca si se afiseaza
@@ -538,12 +531,16 @@ class MancalaGui(object):
         # vor avea toate 0 puncte si se va afisa castigatorul
         if result[0] == 3:
             game_over = 1
-            if player == 1:
-                nume = "A"
+            if result[1] != 2:
+                if result[1] == 0:
+                    nume = "A"
+                else:
+                    nume = "B"
+                self.text_label.setStyleSheet("font: bold; font-size:20px; color:green")
+                self.text_label.setText("Jocul s-a terminat! Castigatorul este " + nume + "!")
             else:
-                nume = "B"
-            self.text_label.setStyleSheet("font: bold; font-size:20px; color:green")
-            self.text_label.setText("Jocul s-a terminat! Castigatorul este " + nume + "!")
+                self.text_label.setStyleSheet("font: bold; font-size:20px; color:green")
+                self.text_label.setText("Jocul s-a terminat! Este remiza!")
             self.block_buttons()
             a = game.get_points("A")
             b = game.get_points("B")
@@ -552,6 +549,7 @@ class MancalaGui(object):
             self.BButton.setText(str(b))
             self.set_zero()
             QApplication.processEvents()
+            return -2
         # daca mutarea a fost corecta se vor returna punctele butonului apasat
         if ok == 1:
             return game.get_points(button2)
@@ -598,7 +596,7 @@ class MancalaGui(object):
             si mai apoi actualizeaza si punctele de pe buton
         """
         # daca e randul calculatorului nu se intampla nimic
-        if opponent=="calculator" and player==1:
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         # daca e primul buton apasat se verifica daca este un inceput de mutare si daca este corect
@@ -621,13 +619,18 @@ class MancalaGui(object):
             points = self.play()
             # daca sunt pana in 6 puncte in textul de pe buton vor aparea si bulinele, altfel nu, din
             # motive vizuale
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A1Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A1Button.setText(str(points))
 
     def a2(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A2
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -644,13 +647,18 @@ class MancalaGui(object):
             buttons[1] = "A2"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A2Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A2Button.setText(str(points))
 
     def a3(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A3
+         """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -667,13 +675,18 @@ class MancalaGui(object):
             buttons[1] = "A3"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A3Button.setText(str(points))
 
     def a4(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A4
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -691,13 +704,18 @@ class MancalaGui(object):
             buttons[1] = "A4"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A4Button.setText(str(points))
 
     def a5(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A5
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -714,13 +732,18 @@ class MancalaGui(object):
             buttons[1] = "A5"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A5Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A5Button.setText(str(points))
 
     def a6(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A6
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -737,13 +760,18 @@ class MancalaGui(object):
             buttons[1] = "A6"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.A6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.A6Button.setText(str(points))
 
     def a(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului A
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -753,13 +781,18 @@ class MancalaGui(object):
             buttons[1] = "A"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 9:
                 self.AButton.setText(self.convert_points_to_text(points))
             elif points >= 10:
                 self.AButton.setText(str(points))
 
     def b(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -769,13 +802,18 @@ class MancalaGui(object):
             buttons[1] = "B"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 9:
                 self.BButton.setText(self.convert_points_to_text(points))
             elif points >= 10:
                 self.BButton.setText(str(points))
 
     def b1(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B1
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -792,13 +830,18 @@ class MancalaGui(object):
             buttons[1] = "B1"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B1Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B1Button.setText(str(points))
 
     def b2(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B2
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -815,13 +858,18 @@ class MancalaGui(object):
             buttons[1] = "B2"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B2Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B2Button.setText(str(points))
 
     def b3(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B3
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -838,13 +886,18 @@ class MancalaGui(object):
             buttons[1] = "B3"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B3Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B3Button.setText(str(points))
 
     def b4(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B4
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -861,13 +914,18 @@ class MancalaGui(object):
             buttons[1] = "B4"
         if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B4Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B4Button.setText(str(points))
 
     def b5(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B5
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -882,15 +940,20 @@ class MancalaGui(object):
                     self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B5"
-        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+        if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B5Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
                 self.B5Button.setText(str(points))
 
     def b6(self):
-        if opponent == "calculator" and player == 1:
+        """
+            functie apelata in cazul apasarii butonului B6
+        """
+        if opponent == "calculator" and ("B" in self.text_label.text() or "calculatorului" in self.text_label.text()):
             return
         global buttons
         if buttons[0] == " ":
@@ -905,8 +968,10 @@ class MancalaGui(object):
                     self.set_text_label_err("Groapa nu are niciun punct! Incepe din nou!")
         elif buttons[1] == " ":
             buttons[1] = "B6"
-        if buttons[0] != " " and buttons[1] != " ":  # e al 2 lea buton apasat
+        if buttons[0] != " " and buttons[1] != " ":
             points = self.play()
+            if points == -2:
+                pass
             if points >= 0 and points <= 6:
                 self.B6Button.setText(self.convert_points_to_text(points))
             elif points >= 7:
@@ -946,10 +1011,9 @@ if __name__ == "__main__":
     opponent = sys.argv[1]
     game.set_opponent(opponent)
     app = QtWidgets.QApplication(sys.argv)
-    Mancala = QtWidgets.QMainWindow()
     Mancala = MyWindow()
     ui = MancalaGui()
-    ui.setup_ui(Mancala)
+    ui.setup_game_ui(Mancala)
     sys._excepthook = sys.excepthook
     sys.excepthook = exception_hook
     sys.exit(app.exec_())

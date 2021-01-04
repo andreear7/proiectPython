@@ -227,7 +227,6 @@ def update_labels(inceput, button1, button2):
        butonul al 2-lea
     """
     global initial_button, current_labels
-    print("inceput=", inceput)
     if inceput == 1:
         points_dict[button1] = 0
     points_dict[button2] = points_dict[button2] + 1
@@ -369,10 +368,12 @@ def get_final_points():
 
 def get_winner():
     """
-        returneaza castigatorul: 1 daca e B, 0 daca e A
+        returneaza castigatorul: 0 daca e A, 1 daca e B, 2 daca e remiza
     """
     get_final_points()
+    if points_dict["A"] == points_dict["B"]:
+        return 2
     if points_dict["A"] > points_dict["B"]:
-        return 1
-    else:
         return 0
+    else:
+        return 1
